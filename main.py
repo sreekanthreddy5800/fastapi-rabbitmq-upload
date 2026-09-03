@@ -30,10 +30,19 @@ async def upload_file(file: UploadFile = File(...)):
     job_id = str(uuid.uuid4())
 
     safe_filename = Path(file.filename).name
+
+    file_content = await file.read()
+
+    if len(file_content) > MAX_FILE_SIZE:
+        return {
+            "error": "File is too large",
+            "max_size_mb": 10
+        }
+
     file_path = UPLOAD_DIR / safe_filename
 
     with open(file_path, "wb") as buffer:
-        buffer.write(await file.read())
+        buffer.write(file_content)
 
     send_task(
         job_id,
@@ -42,6 +51,6 @@ async def upload_file(file: UploadFile = File(...)):
 
     return {
         "job_id": job_id,
-        "filename": file.filename,
+        "filename": safe_filename,
         "status": "queued"
     }
