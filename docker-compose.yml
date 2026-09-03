@@ -1,0 +1,30 @@
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  api:
+    build: .
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    depends_on:
+      - rabbitmq
+    volumes:
+      - uploads:/app/uploads
+
+  worker:
+    build: .
+    container_name: worker
+    command: python consumer.py
+    depends_on:
+      - rabbitmq
+    volumes:
+      - uploads:/app/uploads
+
+volumes:
+  uploads:

@@ -1,0 +1,6 @@
+RM
+__pycache__
+*.pyc
+.git
+uploads
+.DS_Store
