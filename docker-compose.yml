@@ -12,6 +12,8 @@ services:
     container_name: fastapi
     ports:
       - "8000:8000"
+    environment:
+      - RABBITMQ_HOST=rabbitmq
     depends_on:
       - rabbitmq
     volumes:
@@ -20,7 +22,7 @@ services:
   worker:
     build: .
     container_name: worker
-    command: python consumer.py
+    command: python -u consumer.py
     depends_on:
       - rabbitmq
     volumes:

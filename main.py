@@ -6,6 +6,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from producer import send_task
+MAX_FILE_SIZE = 10 * 1024 * 1024
 
 app = FastAPI()
 
@@ -28,14 +29,15 @@ async def home(request: Request):
 async def upload_file(file: UploadFile = File(...)):
     job_id = str(uuid.uuid4())
 
-    file_path = UPLOAD_DIR / file.filename
+    safe_filename = Path(file.filename).name
+    file_path = UPLOAD_DIR / safe_filename
 
     with open(file_path, "wb") as buffer:
         buffer.write(await file.read())
 
     send_task(
         job_id,
-        file.filename
+        safe_filename
     )
 
     return {

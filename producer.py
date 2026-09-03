@@ -1,11 +1,13 @@
 import json
+import os
 import pika
 
 
 def send_task(job_id: str, filename: str):
+    rabbitmq_host = os.getenv("RABBITMQ_HOST", "localhost")
 
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters("rabbitmq")
+        pika.ConnectionParameters(rabbitmq_host)
     )
 
     channel = connection.channel()
