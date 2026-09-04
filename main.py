@@ -1,11 +1,13 @@
-from pathlib import Path
 import uuid
+from pathlib import Path
 
-from fastapi import FastAPI, File, UploadFile, Request
+import aiofiles
+from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from producer import send_task
+
 MAX_FILE_SIZE = 10 * 1024 * 1024
 
 app = FastAPI()
@@ -41,8 +43,8 @@ async def upload_file(file: UploadFile = File(...)):
 
     file_path = UPLOAD_DIR / safe_filename
 
-    with open(file_path, "wb") as buffer:
-        buffer.write(file_content)
+    async with aiofiles.open(file_path, "wb") as buffer:
+        await buffer.write(file_content)
 
     send_task(
         job_id,

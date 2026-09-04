@@ -24,8 +24,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Run Ruff
+        run: ruff check .
+
       - name: Run tests
-        run: PYTHONPATH=. pytest
+        run: pytest
 
       - name: Check Python syntax
         run: python -m compileall .

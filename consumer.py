@@ -1,7 +1,8 @@
 import json
 import time
-import pika
 from pathlib import Path
+
+import pika
 
 while True:
     try:
